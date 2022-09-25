@@ -48,9 +48,10 @@ There are a variaety of functions represeting HTML elements, such as h1, p, stro
 
 > You can add content to your Shiny app by placing it inside a **Panel** function
 
-In the UI object, there are functions which goes insied fluidPage, in the functions like sidebarPanel, and mainPanel, or even navbarPage where we can put text data, we can put Input objects and output objects as well.
+In the functions that goes inside fluidPage, for example, sidebarPanel, mainPanel and navbarPage, we can
+put text, Input and Output objects (widgets) or HTML elements as data.
 
-Input Widgets, args "inputId", "label":
+Input Widgets, basic arguments "inputId", "label":
 
 - sliderInput
 - selectInput
@@ -68,6 +69,8 @@ Input Widgets, args "inputId", "label":
 - sliderInput
 - submitButton
 - textInput
+
+See [Widgets gallery](https://shiny.rstudio.com/gallery/widget-gallery.html)
 
 All outputs goes in `mainPanel`, args "outputId":
 
