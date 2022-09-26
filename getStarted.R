@@ -2,6 +2,7 @@ library(shiny)
 
 runApp("./HelloShiny", display.mode = "showcase")
 runApp("./Lesson2", display.mode = "showcase")
+runApp("./Lesson4", display.mode = "showcase")
 
 runExample("01_hello")      # a histogram
 runExample("02_text")       # tables and data frames

@@ -34,7 +34,7 @@ fluidPage(
 )
 ```
 
-Inside the the UI object we can use HTML elements, for example:
+Inside the UI object we can use HTML elements, for example:
 
 ```R
   img(src = "image.jpg", style = "width: 50px;")
@@ -44,12 +44,12 @@ Inside the the UI object we can use HTML elements, for example:
   HTML("<img src='image.jpg' style='width: 50px;' />")
 ```
 
-There are a variaety of functions represeting HTML elements, such as h1, p, strong, em, etc.
+There are a variety of functions representing HTML elements, such as h1, p, strong, em, etc.
 
 > You can add content to your Shiny app by placing it inside a **Panel** function
 
-In the functions that goes inside fluidPage, for example, sidebarPanel, mainPanel and navbarPage, we can
-put text, Input and Output objects (widgets) or HTML elements as data.
+In the functions that go inside fluidPage, for example, sidebarPanel, mainPanel and navbarPage, we can
+put text, Input (widgets) and Output objects (reactive elements) or HTML elements as data.
 
 Input Widgets, basic arguments "inputId", "label":
 
@@ -72,10 +72,15 @@ Input Widgets, basic arguments "inputId", "label":
 
 See [Widgets gallery](https://shiny.rstudio.com/gallery/widget-gallery.html)
 
-All outputs goes in `mainPanel`, args "outputId":
+Output objects, basic arguments "outputId":
 
-- tableOutput
+- dataTableOutput
+- htmlOutput
+- imageOutput
 - plotOutput
+- tableOutput
+- textOutput
+- uiOutput
 - verbatimTextOutput
 
 ## Server function
@@ -83,11 +88,24 @@ All outputs goes in `mainPanel`, args "outputId":
 Basic structure:
 
 ```R
-output$outputId <- render({
+server <- function(input, output) {
+  output$outputId <- renderFunction({
   # ...
 })
+}
+
 ```
 
+The output is a list-like, in this list must be created an element with its name matching the name defined in the reactive element (Output object). The created element will be assigned to the output of the `render*` functions. Use the `render*` function that corresponds to the output object being used.
+
+Render functions, basic arguments R expression {} (set of instructions, this expression should return the data that matches the Output object or reactive element (text, plot, data frame, etc.)):
+
+- renderDataTable
+- renderImage
 - renderPlot
 - renderPrint
 - renderTable
+- renderText
+- renderUI
+
+Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output object react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the outputs that depend on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
