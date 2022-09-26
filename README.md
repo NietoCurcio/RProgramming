@@ -75,13 +75,14 @@ See [Widgets gallery](https://shiny.rstudio.com/gallery/widget-gallery.html)
 Output objects, basic arguments "outputId":
 
 - dataTableOutput
-- htmlOutput
+- htmlOutput (or uiOutput)
 - imageOutput
 - plotOutput
 - tableOutput
 - textOutput
-- uiOutput
 - verbatimTextOutput
+
+Output object takes two steps, it first defines where and how (width, heigth, etc) the output will be displayed in the UI, then in the server function builds the output in which will use input$inputId data in order to be reactive.
 
 ## Server function
 
@@ -108,4 +109,6 @@ Render functions, basic arguments R expression {} (set of instructions, this exp
 - renderText
 - renderUI
 
-Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output object react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the outputs that depend on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
+Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output object react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the output that depends on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
+
+In the server, a build object must be inside a render function to output the object. Example of functions that returns build objects: ggplot (renderPlot), paste (renderText), HTML function tag (renderUI), head or data.frame (renderTable).
