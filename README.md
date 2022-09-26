@@ -92,7 +92,7 @@ Basic structure:
 server <- function(input, output) {
   output$outputId <- renderFunction({
   # ...
-})
+  })
 }
 
 ```
@@ -112,3 +112,40 @@ Render functions, basic arguments R expression {} (set of instructions, this exp
 Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output object react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the output that depends on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
 
 In the server, a build object must be inside a render function to output the object. Example of functions that returns build objects: ggplot (renderPlot), paste (renderText), HTML function tag (renderUI), head or data.frame (renderTable).
+
+We can only use the reactive values, input$inputId, inside a reactive context. There are 3 main reactive contexts:
+
+- `render*` functions:
+
+```R
+output$outputId <- renderPlot({
+  plot(rnorm(input$num))
+  })
+```
+
+- `observe` function:
+
+```R
+observe({
+  print(input$num1)
+  print(input$num2)
+  })
+```
+
+- `reactive` function, to make a reactive variable, notice that x depends on input$num. All input widgets are reactive variables:
+
+```R
+x <- reactive({
+  input$num + 1
+})
+
+y <- reactive({
+  x() + input$num2
+})
+
+observe({
+  print(input$num)
+  print(x())
+  print(y())
+  })
+```
