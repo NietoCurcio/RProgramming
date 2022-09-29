@@ -149,4 +149,29 @@ observe({
 
 ## Shiny with Leaflet
 
-Through leafletOutput output object and renderLeaflet render function, we can integrate Leaflet maps with Shiny. To get started with Leaflet you create a map object and add a Tile layer, then add layers to make present features in the map, such as Markers or setting the initial view position. The map looks interesting when we provide a data object through `leaflet(data = data)`, in that way we can addPolygons together with colors, labels, highlightOptions and popups corresponding to the data. The data object consists of spatial data, usually in the format of "sp" (as SpatialPolygonDataframe), "sf", map objects from maps package, matrices and data frames with latitude and longitude information. Leaflet [quick_start](/leaflet/) file and [leaflet_tutorial](/leaflet/leaflet_tutorial/) folder shows its functionality.
+Through leafletOutput output object and renderLeaflet render function, we can integrate Leaflet maps with Shiny. To get started with Leaflet you create a map object and add a Tile layer, then add layers to present features in the map, such as Markers or setting the initial view position. The map looks interesting when we provide a data object through `leaflet(data = data)`, in that way we can addPolygons together with colors, labels, highlightOptions and popups corresponding to the data. The data object consists of spatial data, usually in the format of "sp" (as SpatialPolygonDataframe), "sf", map objects from maps package, matrices and data frames with latitude and longitude information (notice that a data frame with one lat and lng will represent a specific point for an observation).
+
+Whereas a single point is represented in an observation by lat and lng features, a polygon is represented by a set of coordinates or points, the polygon of an observation is stored in a Spatial Polygon DataFrame object:
+
+This object stores five slots:
+
+- data: one observation (row in the dataframe) for each polygon.
+- polygons: coordinates (points) to plot each polygon.
+- plotOrder: order to plot each of the polygons.
+- bbox: bounding box, the rectangle that all of the polygons fit within
+- proj4string: projection string, coordinate reference system.
+
+Acessing a slot:
+
+```R
+spdf@data
+spdf@polygons
+```
+
+It's possible to join data into the spatial data dataframe with left_join function.
+
+```R
+spdf@data %>% left_join(df, by = c("primary_key" = "foreign_key"))
+```
+
+The [leaflet](/leaflet/) folder contains leaflet map examples and shiny apps.

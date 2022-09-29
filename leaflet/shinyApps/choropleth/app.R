@@ -1,4 +1,7 @@
 data <- readOGR("https://rstudio.github.io/leaflet/json/us-states.geojson")
+View(data)
+slotNames(data)
+data@polygons[[1]] %>% leaflet()  %>% addTiles() %>% addPolygons()
 
 # Montana <- data[data$name == "Montana", ]
 # typeof(Montana@polygons)
@@ -8,6 +11,8 @@ data <- readOGR("https://rstudio.github.io/leaflet/json/us-states.geojson")
 bins <- c(0, 10, 20, 50, 100, 200, 500, 1000, Inf)
 pal <- colorBin(palette = "YlOrRd", domain = data$density, bins = bins)
 pal_blues <- colorBin(palette = "Blues", domain = data$density, bins = bins)
+# pal_quantile <- colorQuantile(palette = "Blues", domain = data$density, n = 8)
+previewColors(pal = pal_blues, values = seq(0, 1000, by = 100))
 
 # could be used sprintf with placeholders %s for string and %g for double
 popups <- str_glue(
