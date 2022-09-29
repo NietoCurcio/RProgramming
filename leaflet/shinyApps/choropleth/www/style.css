@@ -1,0 +1,11 @@
+/* for bootstrapPage */
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* for fluidPage */
+.container-fluid {
+  width: 100vw;
+  height: 100vh;
+}
