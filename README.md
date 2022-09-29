@@ -63,10 +63,7 @@ Input Widgets, basic arguments "inputId", "label":
 - dateRangeInput
 - fileInput
 - helpText
-- numericInput
 - radioButtons
-- selectInput
-- sliderInput
 - submitButton
 - textInput
 
@@ -149,3 +146,7 @@ observe({
   print(y())
   })
 ```
+
+## Shiny with Leaflet
+
+Through leafletOutput output object and renderLeaflet render function, we can integrate Leaflet maps with Shiny. To get started with Leaflet you create a map object and add a Tile layer, then add layers to make present features in the map, such as Markers or setting the initial view position. The map looks interesting when we provide a data object through `leaflet(data = data)`, in that way we can addPolygons together with colors, labels, highlightOptions and popups corresponding to the data. The data object consists of spatial data, usually in the format of "sp" (as SpatialPolygonDataframe), "sf", map objects from maps package, matrices and data frames with latitude and longitude information. Leaflet [quick_start](/leaflet/) file and [leaflet_tutorial](/leaflet/leaflet_tutorial/) folder shows its functionality.

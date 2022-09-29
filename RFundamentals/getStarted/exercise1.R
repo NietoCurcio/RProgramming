@@ -42,5 +42,4 @@ plt +
   geom_density(aes(fill=numbers), position="stack") +
   xlim(-3,3)
 
-
-
+plt + geom_density() + xlim(-3, 3)
