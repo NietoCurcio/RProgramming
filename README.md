@@ -129,7 +129,7 @@ observe({
   })
 ```
 
-- `reactive` function, to make a reactive variable, notice that x depends on input$num. All input widgets are reactive variables:
+- `reactive` function, to make a reactive variable, the reactive expressions also have caching functionality, notice that x depends on input$num. All input widgets are reactive variables:
 
 ```R
 x <- reactive({

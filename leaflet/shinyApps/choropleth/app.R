@@ -1,7 +1,14 @@
+library(leaflet)
+library(tidyverse)
+library(rgdal)
+library(shiny)
+
+# app called in leaflet_tutorial/choropleth.R
+
 data <- readOGR("https://rstudio.github.io/leaflet/json/us-states.geojson")
-View(data)
-slotNames(data)
-data@polygons[[1]] %>% leaflet()  %>% addTiles() %>% addPolygons()
+# View(data)
+# slotNames(data)
+# data@polygons[[1]] %>% leaflet()  %>% addTiles() %>% addPolygons()
 
 # Montana <- data[data$name == "Montana", ]
 # typeof(Montana@polygons)
@@ -9,10 +16,10 @@ data@polygons[[1]] %>% leaflet()  %>% addTiles() %>% addPolygons()
 # Montana@polygons[[1]]@labpt
 
 bins <- c(0, 10, 20, 50, 100, 200, 500, 1000, Inf)
-pal <- colorBin(palette = "YlOrRd", domain = data$density, bins = bins)
+pal <- colorBin(palette = "YlOrRd", domain = log(data$density), bins = 7)
 pal_blues <- colorBin(palette = "Blues", domain = data$density, bins = bins)
 # pal_quantile <- colorQuantile(palette = "Blues", domain = data$density, n = 8)
-previewColors(pal = pal_blues, values = seq(0, 1000, by = 100))
+# previewColors(pal = pal_blues, values = seq(0, 1000, by = 100))
 
 # could be used sprintf with placeholders %s for string and %g for double
 popups <- str_glue(
@@ -23,7 +30,7 @@ popups <- str_glue(
     >{data$name}
     </strong>
     <br/>
-    {data$density} people / mi<sup>2</sup>
+    {round(log(data$density), 2)} log(people / mi<sup>2</sup>)
   </p>
   "
 ) %>% lapply(htmltools::HTML)
@@ -39,7 +46,6 @@ ui <- bootstrapPage(
     top = 10,
     right = 10,
     fixed = TRUE,
-    width = "400px",
     div(
       style = "opacity: 0.7; background: #FFFFEE; padding: 8px;",
       helpText("US Population Density"),
@@ -62,7 +68,7 @@ server <- function(input, output, session) {
       opacity = 1,
       fillOpacity = 0.7,
       dashArray = "3",
-      fillColor = ~pal(density),
+      fillColor = ~pal(log(density)),
       smoothFactor = 0.2,
       highlightOptions = highlightOptions(
         color = "#333333",
@@ -76,7 +82,7 @@ server <- function(input, output, session) {
     addLegend(
       position = "bottomleft",
       pal = pal,
-      values = ~density,
+      values = ~log(density),
       opacity = 0.8
     )
   })
@@ -112,8 +118,8 @@ server <- function(input, output, session) {
     })
 
   output$plot <- renderPlot({
-    ggplot(data = data@data, aes(x = density)) + geom_histogram(binwidth = 20)
+    ggplot(data = data@data, aes(x = log(density))) + geom_histogram(binwidth = 1)
   })
 }
 
-shinyApp(ui, server)
+shinyApp(ui = ui, server = server)

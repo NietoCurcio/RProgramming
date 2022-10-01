@@ -1,9 +1,13 @@
 library(shiny)
+library(rsconnect)
 
 runApp("./HelloShiny", display.mode = "showcase")
 runApp("./Lesson2", display.mode = "showcase")
 runApp("./Lesson4", display.mode = "showcase")
 runApp("./Lesson5", display.mode = "showcase")
+runApp("./Lesson6", display.mode = "showcase")
+
+rsconnect::deployApp(file.path(getwd(), "leaflet", "shinyApps", "choropleth"))
 
 runExample("01_hello")      # a histogram
 runExample("02_text")       # tables and data frames
