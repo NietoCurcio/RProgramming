@@ -1,5 +1,7 @@
 library(shiny)
 library(ggplot2)
+library(tidyverse)
+library(plotly)
 
 load(file.path(getwd(), "buildingWebAppsShiny", "movies.RData"))
 
@@ -50,7 +52,7 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      plotOutput(outputId = "scatterplot"),
+      plotly::plotlyOutput(outputId = "scatterplot"),
       plotOutput(outputId = "densityplot", height = 200),
       htmlOutput(outputId = "avg_x"),
       textOutput(outputId = "avg_y"),
@@ -59,9 +61,8 @@ ui <- fluidPage(
   )
 )
 
-
 server <- function(input, output, session) {
-  output$scatterplot <- renderPlot({
+  output$scatterplot <- plotly::renderPlotly({
     ggplot(
       data = movies,
       aes_string(x = input$x, y = input$y, color = input$z)
