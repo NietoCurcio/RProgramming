@@ -162,7 +162,7 @@ extend(a, {
 
 # Conclusions
 
-# We can make modularized programming with modules packages
+# We can make modularized programming with modules package
 # It's possible to make OOP programming with R6 package.
 
 # For data analysis, it is not always worthy applyings OOP and modularization.
