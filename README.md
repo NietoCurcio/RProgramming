@@ -120,16 +120,19 @@ output$outputId <- renderPlot({
   })
 ```
 
-- `observe` function:
+- `observe` function can be used to perform actions with side-effects, for example, display a notification, plot, modal or table:
 
 ```R
 observe({
   print(input$num1)
   print(input$num2)
+  showNotification(
+    paste("Num 2 value: ", input$num2)
+  )
   })
 ```
 
-- `reactive` function, to make a reactive variable, the reactive expressions also have caching functionality, notice that x depends on input$num. All input widgets are reactive variables:
+- `reactive` function, used to return a value without side-effects, making a reactive variable. The reactive expressions also have caching functionality, notice that x depends on input$num. All input widgets are reactive variables:
 
 ```R
 x <- reactive({
@@ -146,6 +149,8 @@ observe({
   print(y())
   })
 ```
+
+The expression in the reactive function gets evaluated only when a reactive endpoint (or output object, `output$outputId`) calls its value in the render context (using the cached value or updating it), meanwhile observers always execute when its dependencies change, regardless of whether an input object is being used in a render function or not. Side-effects are used in an observer, these should not be in a reactive expression.
 
 ## Shiny with Leaflet
 

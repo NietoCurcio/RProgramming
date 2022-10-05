@@ -6,6 +6,8 @@ library(plotly)
 load(file.path(getwd(), "buildingWebAppsShiny", "movies.RData"))
 
 ui <- fluidPage(
+  # shinythemes::themeSelector(),
+  theme = shinythemes::shinytheme("superhero"),
   sidebarLayout(
     sidebarPanel(
       selectInput(
@@ -52,8 +54,16 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      plotly::plotlyOutput(outputId = "scatterplot"),
-      plotOutput(outputId = "densityplot", height = 200),
+      tabsetPanel(
+        tabPanel(
+          "Scatterplot",
+          plotly::plotlyOutput(outputId = "scatterplot")
+        ),
+        tabPanel(
+          "Densityplot",
+          plotOutput(outputId = "densityplot", height = 200)
+        ),
+      ),
       htmlOutput(outputId = "avg_x"),
       textOutput(outputId = "avg_y"),
       verbatimTextOutput(outputId = "lmoutput")
