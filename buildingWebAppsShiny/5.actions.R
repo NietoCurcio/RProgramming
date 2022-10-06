@@ -35,6 +35,10 @@ server <- function(input, output, session) {
   # 1. stop with isolate
 
   output$greeting <- renderText({
+    validate(
+      need(input$name != "", "Insert your name")
+    )
+
     paste0(isolate(input$select), ", ", input$name)
   })
 
@@ -75,5 +79,8 @@ server <- function(input, output, session) {
     paste(text_output())
   })
 }
+
+library(shinyWidgets)
+shinyWidgetsGallery()
 
 shinyApp(ui = ui, server = server)

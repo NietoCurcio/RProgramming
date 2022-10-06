@@ -81,6 +81,12 @@ Output functions, basic arguments "outputId":
 
 Output function takes two steps, it first defines where and how (width, heigth, etc) the output will be displayed in the UI, then in the server function builds the output in which will use input$inputId data in order to be reactive.
 
+There are packages that provide functions to integrate an object with leaflet, for example:
+
+- leaflet::leafletOutput
+- DT::DToutput
+- plotly::plotlyOutput
+
 ## Server function
 
 Basic structure:
@@ -105,6 +111,12 @@ Render functions, basic arguments R expression {} (set of instructions, this exp
 - renderTable
 - renderText
 - renderUI
+
+In the same way there are output objects (reactive endpoint), provided by third packages, there are also `render*` functions, for example:
+
+- leaflet::renderLeaflet
+- DT::renderDT
+- plotly::renderPlotly
 
 Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output function react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the output that depends on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
 
