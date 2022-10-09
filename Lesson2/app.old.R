@@ -3,8 +3,8 @@ library(shiny)
 ui <- fluidPage(
   navbarPage(
     "nav bar app title",
-    tabPanel("Plot"),
-    tabPanel("Summary")
+    tabPanel("Plot", "Plot data"),
+    tabPanel("Summary", "Summary data")
   ),
   titlePanel("title panel"),
   sidebarLayout(
