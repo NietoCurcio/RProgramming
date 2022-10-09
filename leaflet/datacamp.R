@@ -38,6 +38,11 @@ schools <- data.frame(
 
 valid_schools <- schools %>% summarize_all(funs(sum(is.na(.))))
 schools[is.na(schools$name), ]
+sapply(schools, anyNA)
+lapply(schools, anyNA)
+apply(schools, 1, anyNA)
+apply(schools, 2, anyNA)
+apply(schools, c(1, 2), anyNA)
 
 schools %>% drop_na()
 schools %>% group_by(state) %>% count() %>% arrange(desc(n))
