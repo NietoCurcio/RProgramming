@@ -24,3 +24,7 @@ if (x > 1) {
 } else {
   answer <- "Less than -1"
 }
+
+# "ternary" operator
+
+value <- ifelse(FALSE, 2, 0)
