@@ -86,6 +86,7 @@ There are packages that provide functions to integrate an object with leaflet, f
 - leaflet::leafletOutput
 - DT::DToutput
 - plotly::plotlyOutput
+- shinydashboard::[dropdownMenuOutput, infoBoxOutput, valueBoxOuput]
 
 ## Server function
 
@@ -117,6 +118,7 @@ In the same way there are output objects (reactive endpoint), provided by third 
 - leaflet::renderLeaflet
 - DT::renderDT
 - plotly::renderPlotly
+- shinydashboard::[renderMenu, renderInfoBox, renderValueBox]
 
 Use the value stored in a Widget (Input object) in the expression made in the `render*` function, this will make the Output function react to the user interaction. Thinking in React terms, the Widgets stores the state of the application (like useState), if we use the state or data inside a `render*` function, it will react. The app's state is stored in the `input` list-like, each element name corresponds to the Widget inputId defined in the UI object. Shiny rebuilds the output that depends on the widget modified, i.e. `inputId` being used in the `render*` function of an `output$outputId`.
 
@@ -153,6 +155,7 @@ x <- reactive({
 
 y <- reactive({
   x() + input$num2
+  # invalidateLater(5000) # invalidate cache reactive context
 })
 
 observe({
@@ -160,6 +163,40 @@ observe({
   print(x())
   print(y())
   })
+```
+
+Reactive by event and trigger side-effect by event:
+
+```R
+var <- eventReactive(input$eventInputId, {
+  # expression to set var value
+})
+
+observeEvent(input$eventInputId, {
+  # expression to make a side-effect
+})
+```
+
+Other interesting reactive contexts:
+
+```R
+# For real-time data
+data <- reactiveFileReader(
+  intervalMillis = 1000,
+  session = session,
+  filePath = "data.csv",
+  readFnc = read.csv
+)
+
+# Polling a database or API
+data <- reactivePoll(
+  15000,
+  session,
+  checkFunc = function() DBI::dbGetQuery(dbConn, "SELECT MAX(updated) FROM table;"),
+  # checkFunc must be a fast function, it returns a value, like a timestamp or count
+  # or even last-modified, ETag http headers
+  valueFunc = function() DBI::dbGetQuery(dbConn, "SELECT * FROM table LIMIT 10;")
+)
 ```
 
 The expression in the reactive function gets evaluated only when a reactive endpoint (or output object, `output$outputId`) calls its value in the render context (using the cached value or updating it), meanwhile observers always execute when its dependencies change, regardless of whether an input object is being used in a render function or not. Side-effects are used in an observer, these should not be in a reactive expression.
@@ -192,3 +229,7 @@ spdf@data %>% left_join(df, by = c("primary_key" = "foreign_key"))
 ```
 
 The [leaflet](/leaflet/) folder contains leaflet map examples and shiny apps.
+
+## Shiny Dashboard
+
+The `shinydashboard` package provides a set of functions, such as dashboardPage, dashboardHeader, dashboardSidebar and dashboardBody, to practically build dashboards.
