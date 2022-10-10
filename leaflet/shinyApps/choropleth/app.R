@@ -22,18 +22,37 @@ pal_blues <- colorBin(palette = "Blues", domain = data$density, bins = bins)
 # previewColors(pal = pal_blues, values = seq(0, 1000, by = 100))
 
 # could be used sprintf with placeholders %s for string and %g for double
-popups <- str_glue(
-  "
-  <p>
-    <strong
-      style='font-weight: bold; padding: 3px 8px; font-size: 15px;'
-    >{data$name}
-    </strong>
-    <br/>
-    {round(log(data$density), 2)} log(people / mi<sup>2</sup>)
-  </p>
-  "
-) %>% lapply(htmltools::HTML)
+# popups <- str_glue(
+#   "
+#   <p>
+#     <strong
+#       style='font-weight: bold; padding: 3px 8px; font-size: 15px;'
+#     >{data$name}
+#     </strong>
+#     <br/>
+#     {round(log(data$density), 2)} log(people / mi<sup>2</sup>)
+#   </p>
+#   "
+# ) %>% lapply(htmltools::HTML)
+
+showPopup <- function(stateName, lat, lng) {
+  state <- data@data %>% filter(name == stateName)
+
+  content <- str_glue(
+    "
+    <p>
+      <strong
+        style='font-weight: bold; padding: 3px 8px; font-size: 15px;'
+      >{state$name}
+      </strong>
+      <br/>
+      {round(log(state$density), 2)} log(people / mi<sup>2</sup>)
+    </p>
+    "
+    ) %>% HTML
+
+  leafletProxy("map") %>% addPopups(lng = lng, lat = lat, popup = content, layerId = state$name)
+}
 
 ui <- bootstrapPage(
   includeCSS("www/style.css"),
@@ -46,6 +65,7 @@ ui <- bootstrapPage(
     top = 10,
     right = 10,
     fixed = TRUE,
+    draggable = TRUE,
     div(
       style = "opacity: 0.7; background: #FFFFEE; padding: 8px;",
       helpText("US Population Density"),
@@ -76,7 +96,7 @@ server <- function(input, output, session) {
         weight = 4,
         bringToFront = TRUE
       ),
-      popup = ~popups,
+      # popup = ~popups,
       layerId = ~name
     ) %>%
     addLegend(
@@ -103,6 +123,10 @@ server <- function(input, output, session) {
         clearMarkers() %>%
         clearPopups() %>%
         addMarkers(lng = lng, lat = lat, popup = name)
+
+    isolate({
+      showPopup(click$id, lat, lng)
+    })
   })
 
   country_clicked <- reactive({
@@ -117,9 +141,69 @@ server <- function(input, output, session) {
       )
     })
 
+  dataInBounds <- reactive({
+    if (is.null(input$map_bounds)) return(data@data[FALSE, ])
+
+    bounds <- input$map_bounds
+
+    latRng <- range(bounds$north, bounds$south)
+    lngRng <- range(bounds$east, bounds$west)
+
+    filter <- data@polygons %>% sapply(function(x) {
+      coords <- x@labpt
+      lat <- coords[2]
+      lng <- coords[1]
+
+      if (
+        (lat >= latRng[1] & lat <= latRng[2]) &
+        (lng >= lngRng[1] & lng <= lngRng[2])
+      )
+      TRUE
+      else
+      FALSE
+    })
+
+    filteredData <- data@data[filter, ]
+    # print(filteredData)
+  })
+
   output$plot <- renderPlot({
-    ggplot(data = data@data, aes(x = log(density))) + geom_histogram(binwidth = 1)
+    ggplot(data = dataInBounds(), aes(x = log(density))) + geom_histogram(binwidth = 1)
   })
 }
 
 shinyApp(ui = ui, server = server)
+
+# Use of S4 objects study:
+# library(tidyverse)
+
+# setClass("Car", representation = representation(
+#   name = "character",
+#   price = "numeric",
+#   numberDoors = "numeric",
+#   typeEngine = "character",
+#   mileage = "numeric"
+# ))
+
+# viper <- new("Car", name = "viper", price = 20000, numberDoors = 4, typeEngine = "V6", mileage = 143)
+# bmw <- new("Car", name = "bmw", price = 20000, numberDoors = 2, typeEngine = "V6", mileage = 143)
+# ferrari <- new("Car", name = "ferrari", price = 20000, numberDoors = 2, typeEngine = "V6", mileage = 143)
+
+# l <- list(viper, bmw, ferrari)
+
+# typeof(l[[1]])
+
+# for (car in l) {
+#   print(car@name)
+#   print(car@numberDoors)
+# }
+
+# # l2 <- list(FALSE, TRUE, TRUE)
+# # l2 <- c(FALSE, TRUE, TRUE)
+# l2 <- l %>% sapply(function(x) {
+#   print(x@numberDoors)
+#   if (x@numberDoors == 2) TRUE else FALSE
+# })
+
+# l3 <- l[l2]
+# length(l3)
