@@ -100,7 +100,7 @@ A <- FreeThrowsAttempt / Games
 myplot(A)
 B <- FreeThrows / FreeThrowsAttempt
 myplot(B)
-C <- (Points - FreeThrows) / FieldGoa
+C <- (Points - FreeThrows) / FieldGoals
 myplot(C)
 
 library(ggplot2)

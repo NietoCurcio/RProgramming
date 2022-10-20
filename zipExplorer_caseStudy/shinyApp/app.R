@@ -1,7 +1,7 @@
 library(leaflet)
 library(RColorBrewer)
-library(scales)
-library(lattice)
+# library(scales)
+# library(lattice)
 library(dplyr)
 library(ggplot2)
 
@@ -33,7 +33,7 @@ showZipcodePopup <- function(zip_code, lat, lng) {
     <h4>Score: {round(selectedZip$centile)}</h4>
     <strong>{selectedZip$city.x}, {selectedZip$state.x} {selectedZip$zipcode}</strong>
     <br>
-    <span>Median household income: {dollar(selectedZip$income * 1000)}</span>
+    <span>Median household income: {scales::dollar(selectedZip$income * 1000)}</span>
     <br>
     <span>Percent of adults with BA: {round(selectedZip$college)}%</span>
     <br>

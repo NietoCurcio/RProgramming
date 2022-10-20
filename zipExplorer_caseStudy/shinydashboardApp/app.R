@@ -2,13 +2,14 @@ library(tidyverse)
 library(shinydashboard)
 library(leaflet)
 library(shiny)
-library(RColorBrewer)
-library(scales)
-library(lattice)
+# library(scales)
+# library(lattice)
 
 # Using app.R we have to call source("global.R")
 # Using the modularized version with ui.R, and server.R, global.R is sourced automatically
-source("../global.R")
+source("global.R")
+# I've had to repeat the global.R code inside the app folder as well as the .csv data files
+# to deploy in shinyapps.io
 
 # There's a way to build modularized code with namespaces using the NS function,
 # but unfortunately it adds more complexity to our app
@@ -26,7 +27,7 @@ showZipcodePopup <- function(zip_code, lat, lng) {
     <h4>Score: {round(selectedZip$centile)}</h4>
     <strong>{selectedZip$city.x}, {selectedZip$state.x} {selectedZip$zipcode}</strong>
     <br>
-    <span>Median household income: {dollar(selectedZip$income * 1000)}</span>
+    <span>Median household income: {scales::dollar(selectedZip$income * 1000)}</span>
     <br>
     <span>Percent of adults with BA: {round(selectedZip$college)}%</span>
     <br>
